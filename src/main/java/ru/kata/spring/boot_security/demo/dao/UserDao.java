@@ -9,7 +9,7 @@ import java.util.List;
 @Repository
 public interface UserDao {
     void saveUser(User user);
-    //void deleteUser(Long id);
+    void deleteUser(Long id);
     void updateUser(User user);
     void deleteByUsername(String username);
     List<User> getAllUsers();

@@ -18,9 +18,9 @@ public interface UserService extends UserDetailsService {
     Collection<? extends GrantedAuthority> getAuthorities(Collection<Role> roles);
     void saveUser(User user);
     void updateUser(User user);
-//    void deleteUser(Long id);
-//    User findById(Long id);
-//    String getRoleNamesByUsername(String username);
+    void deleteUser(Long id);
+    User findById(Long id);
+    String getRoleNamesByUsername(String username);
     List<User> findAllUsers();
     void deleteByUsername(String username);
     boolean existsByUsername(String username);

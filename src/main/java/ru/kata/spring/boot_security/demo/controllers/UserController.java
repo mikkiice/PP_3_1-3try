@@ -37,6 +37,7 @@ public class UserController {
     @GetMapping({ "/admin"})
     public String showAllUsersFromAdmin(Model model, HttpServletRequest request) {
         model.addAttribute("users", userService.findAllUsers());
+        model.addAttribute("allRoles", roleRepository.findAll());
         model.addAttribute("currentPath", request.getRequestURI());
         return "user";
     }
@@ -52,24 +53,17 @@ public class UserController {
     @GetMapping("/admin/users/new")
     public ModelAndView newUser() {
         User user = new User();
-        ModelAndView modelAndView = new ModelAndView("new_user");
+        ModelAndView modelAndView = new ModelAndView();
         modelAndView.addObject("user", user);
-        List<Role> roles = roleRepository.findAll();
-        modelAndView.addObject("allRoles", roles);
+        modelAndView.addObject("allRoles", roleRepository.findAll());
         return modelAndView;
     }
 
-    @RequestMapping(value = "/admin/users/save", method = RequestMethod.POST)
-    public String saveUser(@ModelAttribute("user") User user, Model model) {
-        if (userService.existsByUsername(user.getUsername())) {
-            model.addAttribute("usernameError","Имя пользователя занято");
-            model.addAttribute("allRoles", roleRepository.findAll());
-            return "edit";
-        }
+    @PostMapping("/admin/users/save")
+    public String saveUser(@ModelAttribute("user") User user) {
         User newUser = new User();
-        String pwd = passwordEncoder.encode(user.getPassword());
         newUser.setUsername(user.getUsername());
-        newUser.setPassword(pwd);
+        newUser.setPassword(passwordEncoder.encode(user.getPassword()));
         newUser.setRoles(user.getRoles());
         userService.saveUser(newUser);
         return "redirect:/admin";
@@ -79,29 +73,30 @@ public class UserController {
     @GetMapping("/admin/users/edit/{username}")
     public ModelAndView editUser(@PathVariable (name = "username") String username) {
         User user = userService.findByUsername(username);
-        ModelAndView modelAndView = new ModelAndView("edit");
+        ModelAndView modelAndView = new ModelAndView();
         modelAndView.addObject("user", user);
-        List<Role> roles = roleRepository.findAll();
-        modelAndView.addObject("allRoles", roles);
+        modelAndView.addObject("allRoles", roleRepository.findAll());
+        List<Role> userRoles =(List<Role>) user.getRoles();
+        modelAndView.addObject("userRoles", userRoles);
 
         return modelAndView;
 
     }
 
-    @PostMapping("/admin/users/update/{username}")
-    public String updateUser(@PathVariable String username, @ModelAttribute("user") User user) {
+    @PostMapping ("/admin/users/update/{username}")
+    public String updateUser(@PathVariable String username,@RequestParam String newUsername, @ModelAttribute("user") User user, Model model) {
 
         User user1 = userService.findByUsername(username);
-        user1.setUsername(user.getUsername());
+        user1.setUsername(newUsername);
         user1.setRoles(user.getRoles());
         user1.setPassword(passwordEncoder.encode(user.getPassword()));
-
+        model.addAttribute("allRoles", roleRepository.findAll());
         userService.updateUser(user1);
 
         return "redirect:/admin";
     }
 
-    @GetMapping("/admin/users/delete/{username}")
+    @RequestMapping(value = "/admin/users/delete/{username}")
     public String removeUser(@PathVariable String username) {
         userService.deleteByUsername(username);
         return "redirect:/admin";

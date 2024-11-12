@@ -62,29 +62,29 @@ public class UserServiceImpl implements UserService {
         userDao.updateUser(user);
     }
 
-//    @Override
-//    public void deleteUser(Long id) {
-//        userDao.deleteUser(id);
-//    }
+    @Override
+    public void deleteUser(Long id) {
+        userDao.deleteUser(id);
+    }
 
     @Override
     public void deleteByUsername(String username) {
         userDao.deleteByUsername(username);
     }
 
-//    @Override
-//    public User findById(Long id) {
-//        return userDao.getUserById(id);
-//    }
+    @Override
+    public User findById(Long id) {
+        return userDao.getUserById(id);
+    }
     @Override
     public boolean existsByUsername(String username) {
         return userDao.getUserByUsername(username) != null;
     }
 
-//    @Override
-//    public String getRoleNamesByUsername(String username) {
-//        return userDao.getRolesByUsername(username);
-//    }
+    @Override
+    public String getRoleNamesByUsername(String username) {
+        return userDao.getRolesByUsername(username);
+    }
 
     @Override
     public List<User> findAllUsers() {

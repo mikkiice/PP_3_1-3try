@@ -41,7 +41,7 @@ public class UserDaoImpl implements UserDao {
     @Override
     @Transactional
     public void updateUser(User user) {
-        entityManager.merge(user);
+            entityManager.merge(user);
     }
 
     @Override

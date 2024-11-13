@@ -1,9 +1,8 @@
 <!DOCTYPE html>
-<html lang="en" xmlns:th="http://www.thymeleaf.org"
-      xmlns="http://www.w3.org/1999/html">
+<html lang="en" xmlns:th="http://www.thymeleaf.org" xmlns:sec="http://www.w3.org/1999/html">
 <head>
     <meta charset="UTF-8">
-    <meta name="viewport" content="width-device-width, initial-scale-1, shrink-to-fit=no">
+    <meta name="viewport" content="width=device-width, initial-scale=1">
     <title>UserList</title>
     <link href="https://maxcdn.bootstrapcdn.com/bootstrap/4.5.2/css/bootstrap.min.css" rel="stylesheet">
     <style>
@@ -69,23 +68,23 @@
 <body>
 <div class="content">
 <div class="navbar navbar-dark bg-dark">
-    <span><strong th:text="${#authentication.name}">Username</strong> with roles:
-    <span th:each="roles : ${#authentication.getAuthorities()}" th:text="${roles} + ' '"> Where Roles?</span> </span>
+    <span><strong th:text="${#authentication.name}">USERNAME</strong> with roles:
+    <span th:each="role : ${#authentication.authorities}" th:text="${role.authority}">WHERE ROLES?</span> </span>
     <a href="#" th:href="@{/logout}">Logout</a>
     <div class="sidebar">
-        <a th:if="${#authorization.expression('hasRole(''ROLE_ADMIN'') or (hasRole(''ROLE_ADMIN'') and hasRole(''ROLE_USER''))')}"
+        <a th:if="${#authorization.expression('(hasRole(''ROLE_ADMIN'') and hasRole(''ROLE_USER'')) or hasRole(''ROLE_ADMIN'')')}"
            th:classappend="${currentPath == '/admin'} ? 'active'" th:href="@{/admin}">Admin</a>
         <a th:classappend="${currentPath== '/user'} ? 'active' " th:href="@{/user}">User</a>
     </div>
     </div>
 
-    <h1 class="my-5">Admin Panel</h1>
+    <h1 class="my-4">Admin Panel</h1>
     <ul class="nav nav-tabs">
         <li class="nav-item">
             <a class="nav-link active" href="#">Users table</a>
         </li>
         <li class="nav-item">
-            <a class="nav-link" th:if="${#authorization.expression('hasRole(''ROLE_ADMIN'') or (hasRole(''ROLE_ADMIN'') and hasRole(''ROLE_USER''))')}"
+            <a class="nav-link" th:if="${#authorization.expression('(hasRole(''ROLE_ADMIN'') and hasRole(''ROLE_USER'')) or hasRole(''ROLE_ADMIN'')')}"
                data-toggle="modal" data-target="#newUserModal">New User</a>
         </li>
     </ul>
@@ -100,9 +99,9 @@
             <tr>
                 <th>Username</th>
                 <th>Roles</th>
-                <th th:if="${#authorization.expression('hasRole(''ROLE_ADMIN'') or (hasRole(''ROLE_ADMIN'') and hasRole(''ROLE_USER''))')}">
+                <th th:if="${#authorization.expression('(hasRole(''ROLE_ADMIN'') and hasRole(''ROLE_USER'')) or hasRole(''ROLE_ADMIN'')')}">
                     Edit</th>
-                <th th:if="${#authorization.expression('hasRole(''ROLE_ADMIN'') or (hasRole(''ROLE_ADMIN'') and hasRole(''ROLE_USER''))')}">
+                <th th:if="${#authorization.expression('(hasRole(''ROLE_ADMIN'') and hasRole(''ROLE_USER'')) or hasRole(''ROLE_ADMIN'')')}">
                     Delete</th>
             </tr>
             </thead>
@@ -110,14 +109,13 @@
             <tr th:each="user : ${users}">
                 <td th:text="${user.username}">user</td>
                 <td th:text="${user.role}">ROLE_USER</td>
-                <td th:if="${#authorization.expression('hasRole(''ROLE_ADMIN'') or (hasRole(''ROLE_ADMIN'') and hasRole(''ROLE_USER''))')}">
+                <td th:if="${#authorization.expression('(hasRole(''ROLE_ADMIN'') and hasRole(''ROLE_USER'')) or hasRole(''ROLE_ADMIN'')')}">
                     <button class="btn btn-edit btn-sm" data-toggle="modal" data-target="#editUserModal"
-                            th:data-username="${user.username}" th:data-roles="${user.roles}"
-                            th:data-allRoles="${allRoles}">Edit</button>
+                            th:data-username="${user.username}" th:data-roles="${user.roles}" th:data-allRoles="${allRoles}">Edit</button>
                 </td>
-                <td th:if="${#authorization.expression('hasRole(''ROLE_ADMIN'') or (hasRole(''ROLE_ADMIN'') and hasRole(''ROLE_USER''))')}">
-                <button class="btn btn-delete btn-sm" data-toggle="modal" data-target="#deleteUserModal"
-                        th:data-username="${user.username}">Delete</button>
+                <td th:if="${#authorization.expression('(hasRole(''ROLE_ADMIN'') and hasRole(''ROLE_USER'')) or hasRole(''ROLE_ADMIN'')')}">
+                    <button class="btn btn-delete btn-sm" data-toggle="modal" data-target="#deleteUserModal"
+                            th:data-username="${user.username}">Delete</button>
                 </td>
             </tr>
             </tbody>
@@ -129,14 +127,14 @@
     <div class="modal-dialog" role="document">
         <div class="modal-content">
             <div class="modal-header">
-                <h4 class="modal-title" id="editUserModalLabel">Edit User</h4>
+                <h5 class="modal-title" id="editUserModalLabel">Edit User</h5>
                 <button type="button" class="close" data-dismiss="modal" aria-label="Close">
                     <span aria-hidden="true">&times;</span>
                 </button>
             </div>
             <div class="modal-body">
                 <form th:action="@{/admin/users/update/{username}(username=${username})}" method="post">
-                    <div class="form-group">
+                <div class="form-group">
                         <label for="editUsername">Username</label>
                         <input type="text" class="form-control" id="editUsername" name="username" required />
                     </div>
@@ -176,7 +174,7 @@
             <div class="modal-footer">
                 <form id="deleteUserForm" method="post">
                     <button type="button" class="btn btn-secondary" data-dismiss="modal">Close</button>
-                    <input type="submit" class="btn btn-danger" value="Delete">>
+                    <input type="submit" class="btn btn-danger" value="Delete">
                 </form>
             </div>
         </div>

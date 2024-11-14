@@ -55,13 +55,11 @@ public class UserDaoImpl implements UserDao {
 
 
     @Override
-    @Transactional
     public List<User> getAllUsers() {
         return entityManager.createQuery("FROM User", User.class).getResultList();
     }
 
     @Override
-    @Transactional
     public String getRolesByUsername(String username) {
         User user = userRepository.findByUsername(username);
         return user.getRole();

@@ -15,6 +15,8 @@ public class User {
     private Long id;
     private String username;
     private String password;
+    private String firstName;
+    private String lastName;
 
     @ManyToMany(fetch = FetchType.LAZY)
     @JoinTable( name = "user_roles",
@@ -22,11 +24,13 @@ public class User {
             inverseJoinColumns = @JoinColumn(name = "role_id"))
     Collection<Role> roles;
 
-    public User(Long id, String username, String password, Set<Role> roles) {
+    public User(Long id, String username, String password, Set<Role> roles, String firstName, String lastName) {
         this.id = id;
         this.username = username;
         this.password = password;
         this.roles = roles;
+        this.firstName = firstName;
+        this.lastName = lastName;
     }
 
     public User() {
@@ -44,7 +48,7 @@ public class User {
         for (Role role : roles) {
             roleList += role.getName() + ",";
         }
-        return roleList.substring(0, roleList.length() - 1);
+        return roleList.substring(0, roleList.length() - 1).replace("ROLE_","");
     }
 
     public Long getId() {
@@ -69,6 +73,22 @@ public class User {
 
     public void setPassword(String password) {
         this.password = password;
+    }
+
+    public String getFirstName() {
+        return firstName;
+    }
+
+    public void setFirstName(String firstName) {
+        this.firstName = firstName;
+    }
+
+    public String getLastName() {
+        return lastName;
+    }
+
+    public void setLastName(String lastName) {
+        this.lastName = lastName;
     }
 
     @Override
